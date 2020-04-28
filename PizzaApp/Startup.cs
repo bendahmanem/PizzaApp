@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PizzaApp.Data;
 using PizzaApp.Database.Context;
 
 namespace PizzaApp
@@ -28,12 +29,18 @@ namespace PizzaApp
                 configuration.RootPath = "ClientApp/dist";
             });
 
+            services.AddSingleton<CustomHttpClient>();
+
+            services.AddSingleton<AppSettingsService>();
+
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("AppdDbContext"));
             });
             // On affiche des logs d'erreurs plus détaillés !
             services.AddServerSideBlazor().AddCircuitOptions(o => o.DetailedErrors = true);
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

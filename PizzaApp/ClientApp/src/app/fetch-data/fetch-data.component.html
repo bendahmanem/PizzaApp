@@ -1,24 +1,84 @@
-<h1 id="tableLabel">Weather forecast</h1>
+<h1 id="tableLabel">Gestion du catalogue de pizza</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
 
-<p *ngIf="!forecasts"><em>Loading...</em></p>
+<p *ngIf="cataloguePizzas && cataloguePizzas.length === 0"><em>En attente des pizzas...</em></p>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="forecasts">
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Temp. (C)</th>
-      <th>Temp. (F)</th>
-      <th>Summary</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let forecast of forecasts">
-      <td>{{ forecast.date }}</td>
-      <td>{{ forecast.temperatureC }}</td>
-      <td>{{ forecast.temperatureF }}</td>
-      <td>{{ forecast.summary }}</td>
-    </tr>
-  </tbody>
-</table>
+
+  <span *ngIf="cataloguePizzas"> 
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nom de la pizza</th>
+            <th scope="col">Taille de la pizza</th>
+            <th scope="col">Prix de la pizza</th>
+            <th scope="col">Options</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pizza of cataloguePizzas; let i = index;">
+            <td>{{pizza.numPizza}}</td>
+            <td>{{ pizza.nomPizza }}</td>
+            <td>{{ pizza.taillePizza }} cm</td>
+            <td>{{ pizza.prixPizza / 100 }}€</td>
+            <td>
+              <div class="dropdown">
+                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Dropdown link
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" (click)="modifyPizza(pizza.numPizza)">Modifier la pizza</a>
+                  <a class="dropdown-item" (click)="deletePizza(pizza.numPizza)">Supprimer la pizza</a>
+                </div>
+              </div>
+            </td>         
+          </tr>
+        </tbody>
+      </table>
+  </span>
+
+<form [formGroup]="pizzaForm" #templateVariable="ngForm" (ngSubmit)="submit()">
+      
+  <div class="form-group">
+    <label for="NomPizza">Nom de la pizza</label>
+    <input 
+        formControlName="NomPizza"
+        id="NomPizza" 
+        type="text" 
+        class="form-control">
+    <div *ngIf="f.NomPizza.touched && f.NomPizza.invalid" class="alert alert-danger">
+        <div *ngIf="f.NomPizza.errors.required">Ce champ est requis.</div>
+    </div>
+</div>
+
+<div class="form-group">
+  <label for="TaillePizza">Taille de la pizza</label>
+  <input 
+      formControlName="TaillePizza"
+      id="TaillePizza" 
+      type="number" 
+      class="form-control">
+  <div *ngIf="f.TaillePizza.touched && f.TaillePizza.invalid" class="alert alert-danger">
+      <div *ngIf="f.TaillePizza.errors.required">Ce champ est requis.</div>
+      <div *ngIf="f.PrixPizza.errors.required">Le prix de la pizza est un nombre.</div>
+  </div>
+</div>
+
+  <div class="form-group">
+    <label for="PrixPizza">Prix Pizza</label>
+    <input 
+        formControlName="PrixPizza"
+        id="PrixPizza" 
+        type="number" 
+        class="form-control">
+    <div *ngIf="f.PrixPizza.touched && f.PrixPizza.invalid" class="alert alert-danger">
+        <div *ngIf="f.PrixPizza.errors.required">Le numéro de pizza est obligatoire</div>
+        <div *ngIf="f.PrixPizza.errors.pattern">Ce champ est requis.</div>
+    </div>
+</div>
+ 
+
+  <!-- <button class="btn btn-info" type="button" (click)="setValue()">Set Default Value</button> -->
+  <button class="btn btn-info mr-2" type="button" (click)="resetValue()">Remettre à zéro</button>
+  <button class="btn btn-primary" type="submit">Créér la pizza!</button>
+</form>
